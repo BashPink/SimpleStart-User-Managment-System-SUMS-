@@ -1,0 +1,73 @@
+#!/bin/bash
+
+#-----------------------------------------------------------------------------------------------------------------------
+# Copyright (c) 2022, Aaron Kicner. All rights reserved.
+# Licensed under the MIT License.
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+# documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+# and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions
+# of the Software.
+# ----------------------------------------------------------------------------------------------------------------------
+
+# This Script is used to make creating a new user easier.
+
+echo "Welcome to the SimpleStart User Managment System (SUMS)!"
+echo "Non-root users or users without sudo privileges are not allowed to use this script."
+echo "Would you like to create a new user? (y/n)"
+read new_user
+if [ $new_user = "y" ]
+then
+    echo "What is the user's name?"
+    read -r user_name
+    echo "What is the user's password?"
+    read -r user_password
+    echo "What group would you like to add them to?"
+    read -r group_name
+    useradd -g $group_name $user_name
+    echo $user_password | passwd --stdin $user_name
+    echo "User $user_name has been created!"
+else
+    echo "Goodbye!"
+fi
+echo "Do you wish to also delete a user? (y/n)"
+read -r delete_user
+if [ $delete_user = "y" ]; then
+    echo "Please enter the name of the user you wish to delete."
+    read delete_user
+    userdel -r $delete_user
+    echo "User Deletion Complete!"
+fi
+echo "Do you wish to delete a group? (y/n)"
+read delete_group
+if [ $delete_group = "y" ]; then
+    echo "Please enter the name of the group you wish to delete."
+    read delete_group
+    groupdel $delete_group
+    echo "Group Deletion Complete!"
+
+fi
+echo "Do you wish to delete a group from a user? (y/n)"
+read delete_group_from_user
+if [ $delete_group_from_user = "y" ]; then
+    echo "Please enter the name of the user you wish to delete the group from."
+    read delete_group_from_user
+    echo "Please enter the name of the group you wish to delete."
+    read delete_group
+    usermod -G $delete_group $delete_group_from_user
+    echo "Group Deletion Complete!"
+fi
+echo "Do you wish to delete a user from a group? (y/n)"
+read delete_user_from_group
+if [ $delete_user_from_group = "y" ]; then
+    echo "Please enter the name of the group you wish to delete the user from."
+    read delete_user_from_group
+    echo "Please enter the name of the user you wish to delete."
+    read delete_user
+    usermod -G $delete_user_from_group $delete_user
+    echo "User Deletion Complete!"
+fi
+
+echo "Thank you for using the SimpleStart Creation System!"
+echo "Please feel free to leave feedback at aaron.kicner@yahoo.com with the subject, 'SUMS Feedback'."
